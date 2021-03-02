@@ -1,22 +1,13 @@
 <?php
-require_once 'core.php';
-//------- require Dependency 
-require 'vendor/autoload.php';
+require_once './core/core.php';
 
+$contentRequestTelegram = file_get_contents("php://input");
+$content = json_decode($contentRequestTelegram,true);
 
-use Instagram\Api;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+if (isset($content["message"])){
+    $chat_id = $content["message"]['chat']['id'];
+    $text= $content["message"]['text'];
+    $message_id = $content["message"]["message_id"];
+}
 
-
-$cachePool = new FilesystemAdapter('Instagram', 0, __DIR__ . '/../cache');
-$api = new Api($cachePool);
-$api->login('alireza98moham', 'alireza123456'); // mandatory
-$data = $api->getProfile('afsh7n_');
-
-
-$content = file_get_contents("php://input");
-$update = json_decode($content,true);
-$chat_id = $update["message"]['chat']['id'];
-$text= $update["message"]['text'];
-
-MassageRequestJson('sendMessage',['chat_id'=>$chat_id,'text'=>$data->getId()]);
+MassageRequestJson('sendMessage',['chat_id'=>$chat_id,'text'=>$text]);

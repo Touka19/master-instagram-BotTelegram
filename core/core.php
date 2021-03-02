@@ -1,5 +1,5 @@
 <?php
-define('BOT_TOKEN',"1556887896:AAFXcAgL1PYCclWyNDYKZ9Un8VmXsIGDsBY");
+define('BOT_TOKEN',"YOUR_TOKEN");
 define('API_URL',"https://api.telegram.org/bot".BOT_TOKEN.'/');
 
 function MassageRequestJson($method,$parameters){
