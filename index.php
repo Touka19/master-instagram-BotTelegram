@@ -4,7 +4,6 @@ require_once './Database/database.php';
 
 $contentRequestTelegram = file_get_contents("php://input");
 $content = json_decode($contentRequestTelegram, true);
-$language = 'fa';
 
 //----------------------
 $dbUser = new database('master-instagram', 'root', '', 'users');
@@ -29,61 +28,52 @@ if (isset($content["message"])) {
 
 //----------User
 $user = $dbUser->ShowUser($chat_id);
-
 if ($text == "/start") {
     MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => "Please Select language 🇺🇸🇮🇷", 'reply_markup' => ['inline_keyboard' => [
         [
-            ['text' => '🇮🇷فارسی🇮🇷', 'callback_data' => "!fa"]
+            ['text' => '🇮🇷فارسی🇮🇷', 'callback_data' => "!lang_fa"]
         ],
         [
-            ['text' => '🇺🇸English🇺🇸', 'callback_data' => "!en"]
+            ['text' => '🇺🇸English🇺🇸', 'callback_data' => "!lang_en"]
         ]
     ]]]);
 }
 
-if ($data == '!fa') {
+if ($data == '!lang_fa' || $user['lang'] == 'fa') {
     $jsonFile = file_get_contents('language/fa.json');
     $jsonLanguage = json_decode($jsonFile, true);
 
-} elseif ($data == '!en') {
+} elseif ($data == '!lang_en' || $user['lang'] == 'en') {
     $jsonFile = file_get_contents('language/en.json');
     $jsonLanguage = json_decode($jsonFile, true);
 }
 
-//-------------------
-switch ($data) {
-    case "!fa":
-        MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['welcome'], 'reply_markup' => ['inline_keyboard' => [
-            [
-                ['text' => $jsonLanguage['information'], 'callback_data' => "!information"]
-            ],
-            [
-                ['text' => $jsonLanguage['about'], 'callback_data' => "!about"]
-            ]
-        ]]]);
-        $tr =$dbUser->AddUser($chat_id, $username, $first_name, 'fa');
-        break;
-    case '!information':
-        MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getInformation'], 'reply_markup' => ['inline_keyboard' => [
-            [
-                ['text' => $jsonLanguage['information'], 'callback_data' => "!information"]
-            ],
-            [
-                ['text' => $jsonLanguage['about'], 'callback_data' => "!about"]
-            ]
-        ]]]);
-        break;
-    case '!about':
-        MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['about'], 'reply_markup' => ['inline_keyboard' => [
-            [
-                ['text' => $jsonLanguage['information'], 'callback_data' => "!information"]
-            ],
-            [
-                ['text' => $jsonLanguage['about'], 'callback_data' => "!about"]
-            ]
-        ]]]);
-        break;
+
+if (isset($data)){
+    switch ($data) {
+        case (preg_match('~\!lang_.+~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['welcome'], 'reply_markup' => ['inline_keyboard' => [
+                [
+                    ['text' => $jsonLanguage['information'], 'callback_data' => "!information"]
+                ],
+                [
+                    ['text' => $jsonLanguage['about'], 'callback_data' => "!about"]
+                ]
+            ]]]);
+            $dbUser->AddUser($chat_id, $username, $first_name, substr($data, 6));
+            break;
+
+        case (preg_match('~\!information~', $data) ? true : false):
+             MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getInformation']]);
+            break;
+
+        case (preg_match('~\!about~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['about'], 'reply_markup' => ['inline_keyboard' => [
+                [
+                    ['text' => $jsonLanguage['tellUs'], 'url' => "https://t.me/afsh7n"]
+                ]]]]);
+            break;
+    }
 
 }
-
 

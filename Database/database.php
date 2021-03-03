@@ -41,7 +41,7 @@ class database
             $result->execute();
             return true;
         }else{
-            return $this->ShowUser($chatID);
+            $this->UpdateUser($chatID,$username,$firstname,$lang);
         }
     }
 
