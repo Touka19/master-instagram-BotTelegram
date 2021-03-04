@@ -2,6 +2,7 @@
     "require": {
         "pgrimaud/instagram-user-feed": "^6.7",
         "symfony/cache": "^5.2",
-        "raiym/instagram-php-scraper": "^0.11.1"
+        "raiym/instagram-php-scraper": "^0.11.1",
+        "phpfastcache/phpfastcache": "^8.0"
     }
 }
