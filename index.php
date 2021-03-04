@@ -191,7 +191,33 @@ if (isset($text)) {
                 $count = $db->request(865627951,(int)$db->countRequest(865627951)['count_request']+1);
             }
             break;
-
+    //----------------------------------------------------UnLike-------------------------------------------------------
+        case (preg_match('~unlike#.*~', $text) ? true : false):
+            $exp = explode('#',$text);
+            if (($user['accountUser'])?true:false){
+                $media->setLink(substr($exp[1],0,40));
+                $api->unlike($api->getMediaDetailed($media)->getId());
+                MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $jsonLanguage['sussesUnlike'],'reply_markup' => $button->buttonBack()]);
+                $count = $db->request(865627951,(int)$db->countRequest(865627951)['count_request']+1);
+            }else{
+                MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['ErrorAccount'], 'reply_markup' => $button->buttonBack()]);
+                $count = $db->request(865627951,(int)$db->countRequest(865627951)['count_request']+1);
+            }
+            break;
+    //----------------------------------------------------Like-------------------------------------------------------
+        case (preg_match('~like#.*~', $text) ? true : false):
+            $exp = explode('#',$text);
+            if (($user['accountUser'])?true:false){
+                $media->setLink(substr($exp[1],0,40));
+                $mediaDetailed = $api->getMediaDetailed($media)->getId();
+                $api->like($mediaDetailed);
+                MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $jsonLanguage['sussesLike'],'reply_markup' => $button->buttonBack()]);
+                $count = $db->request(865627951,(int)$db->countRequest(865627951)['count_request']+1);
+            }else{
+                MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['ErrorAccount'], 'reply_markup' => $button->buttonBack()]);
+                $count = $db->request(865627951,(int)$db->countRequest(865627951)['count_request']+1);
+            }
+            break;
 
     }
 }
