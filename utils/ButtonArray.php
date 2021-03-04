@@ -76,6 +76,32 @@ class ButtonArray{
             [
                 ['text' => $this->language['listFollwer'], 'callback_data' => "ListFollwer-".$this->text],
                 ['text' => $this->language['listFollwing'], 'callback_data' => "ListFollwing-".$this->text]
+            ]
+        ]];
+    }
+
+    public function buttonBack()
+    {
+        return ['inline_keyboard' => [
+            [
+                ['text' => $this->language['back'], 'callback_data' => "!lang_" . $this->user['lang']]
             ]]];
+    }
+
+    public function buttonManagementAccount()
+    {
+        return ['inline_keyboard' => [
+            [
+                ['text' => $this->language['Follow'], 'callback_data' => "!Follow"],
+                ['text' => $this->language['Like'], 'callback_data' => "!Like"]
+            ],
+            [
+                ['text' => $this->language['UnFollow'], 'callback_data' => "!UnFollow"],
+                ['text' => $this->language['Unlike'], 'callback_data' => "!Unlike"]
+            ],
+            [
+                ['text' => $this->language['back'], 'callback_data' => "!lang_" . $this->user['lang']]
+            ]
+        ]];
     }
 }
