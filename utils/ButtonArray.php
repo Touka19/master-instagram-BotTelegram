@@ -16,6 +16,9 @@ class ButtonArray{
         } elseif ($data == '!lang_en' || $user['lang'] == 'en') {
             $jsonFile = file_get_contents('language/en.json');
             $this->language = json_decode($jsonFile, true);
+        }else{
+            $jsonFile = file_get_contents('language/en.json');
+            $this->language = json_decode($jsonFile, true);
         }
     }
 
@@ -58,7 +61,7 @@ class ButtonArray{
     {
        return ['inline_keyboard' => [
             [
-                ['text' => $this->language['back'],'callback_data' => "!lang_".$this->user['lang']]
+                ['text' => $this->language['back'],'callback_data' => "!Home"]
             ]]];
     }
 
@@ -84,7 +87,7 @@ class ButtonArray{
     {
         return ['inline_keyboard' => [
             [
-                ['text' => $this->language['back'], 'callback_data' => "!lang_" . $this->user['lang']]
+                ['text' => $this->language['back'], 'callback_data' => "!Home"]
             ]]];
     }
 
@@ -100,8 +103,61 @@ class ButtonArray{
                 ['text' => $this->language['Unlike'], 'callback_data' => "!Unlike"]
             ],
             [
-                ['text' => $this->language['back'], 'callback_data' => "!lang_" . $this->user['lang']]
+                ['text' => $this->language['back'], 'callback_data' => "!Home"]
             ]
         ]];
     }
+
+    public function ButtonCreateBio()
+    {
+        return ['inline_keyboard' => [
+            [
+                ['text' => "➖", 'callback_data' => "!countFonts_add"],
+                ['text' => $this->user['countFonts'], 'callback_data' => "!HelloFonts"],
+                ['text' => "➕", 'callback_data' => "!countFonts_remove"]
+            ],
+            [
+                ['text' => $this->language['back'], 'callback_data' => "!Home"]
+            ]]];
+    }
+
+    public function buttonHelp()
+    {
+        return ['inline_keyboard' => [
+            [
+                ['text' => $this->language['HelpPost'], 'callback_data' => "!HelpPost"],
+                ['text' => $this->language['HelpAccount'], 'callback_data' => "!HelpAccount"]
+            ],
+            [
+                ['text' => $this->language['back'], 'callback_data' => "!Home"]
+            ]
+        ]];
+    }
+
+    public function buttonSetting()
+    {
+        return ['inline_keyboard' => [
+            [
+                ['text' => $this->language['referral'], 'callback_data' => "!referral"],
+                ['text' => $this->language['language'], 'callback_data' => "!language"]
+            ],
+            [
+                ['text' => $this->language['back'], 'callback_data' => "!Home"]
+            ]
+        ]];
+    }
+
+    public function buttonReferral()
+    {
+        return ['inline_keyboard' => [
+            [
+                ['text' => $this->language['countReferral'], 'url' => "https://afsh7n.ir"],
+                ['text' => $this->language['linkReferral'], 'callback_data' => "!linkReferral"]
+            ],
+            [
+                ['text' => $this->language['back'], 'callback_data' => "!Home"]
+            ]
+        ]];
+    }
+
 }

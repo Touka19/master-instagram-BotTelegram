@@ -29,5 +29,22 @@
   "downloadMedia": "\uD83D\uDCE5Download Photo & Video\uD83D\uDCE5",
   "getDownloadMedia": "",
   "createBio": "✏️Create Bio\uD83D\uDC8C",
-  "help": "\uD83D\uDCA1help\uD83D\uDCA1"
+  "PanelcreateBio": "☺️Ready to beautify Bio Instagram?\n\n\uD83D\uDCBCWell, to use this part, it is enough to first put a & mark and then put the text\uD83D\uDC47:\n&text\n\n\uD83D\uDCA1For example\uD83D\uDC47:\n&Hello World!\n\n\uD83D\uDC8EFrom here you can change the number of fonts you create.(1,135)\uD83D\uDC47\uD83D\uDC47",
+  "help": "\uD83D\uDCA1Help\uD83D\uDCA1",
+  "getHelp": "\uD83D\uDCA1What do you need help with?\uD83D\uDC47",
+  "HelpPost": "\uD83D\uDCE5Download Media",
+  "HelpAccount": "\uD83D\uDD75️Data Collection",
+  "captionPost": "\uD83D\uDCA1Guide to getting url post:\uD83D\uDC47\n\n\uD83D\uDCBCFirst, log in to Instagram and refer to the desired post\n1⃣:Then hit the three dots as shown in Figure One\n2⃣:Then click on Copy Url as shown in Figure 2\n\uD83C\uDD97:Well done. Now you can use it inside the robot.",
+  "captionAccount": "\uD83D\uDCA1Guide to getting Username Account:\uD83D\uDC47\n\n\uD83D\uDCBCFirst, log in to your Instagram and go to the desired page:\n1⃣:Then hit the three dots as shown in Figure One\n2⃣:Then click on Copy Profile Url as shown in Figure 2\n\uD83C\uDD97:Well done. Now you can use it inside the robot.",
+  "notSupportFonts": "Not Supported Persian,i am sorry\uD83E\uDD7A",
+  "referral": "\uD83D\uDC65Referral\uD83D\uDC65",
+  "language": "\uD83C\uDDEE\uD83C\uDDF7Language\uD83C\uDDFA\uD83C\uDDF8",
+  "countReferral": "\uD83D\uDC65Count Referral:",
+  "linkReferral": "\uD83D\uDCCEGet Link Referral\uD83D\uDC65",
+  "getReferral": "\uD83D\uDCBCMake better use of the robot by subdividing methionine\uD83D\uDC47",
+  "getLanguage": "\uD83C\uDDEE\uD83C\uDDF7Please Select Language\uD83C\uDDFA\uD83C\uDDF8:\uD83D\uDC47",
+  "textRefrral": "\uD83D\uDD30Join Mr. Instagram, the top Instagram management robot.\n\n\uD83D\uDCA1No need for further explanation, I say in one sentence. What everyone is happy about. We are together.",
+  "getSetting": "\uD83D\uDCBCFrom here you can change your settings:\uD83D\uDC47",
+  "joinChannel": "\uD83D\uDD30To use the robot service, you need to join our sponsor channel:\uD83C\uDF89\n\uD83D\uDCA1Just click the button below and become a member\uD83D\uDC47",
+  "join": "✅Join Channel Sponsor✅"
 }

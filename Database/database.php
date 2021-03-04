@@ -26,39 +26,43 @@ class database
         return $row;
     }
 
-    public function AddUser($chatID,$username,$firstname,$lang,$accountUser,$accountPass,$status,$premium,$is_admin)
+    public function AddUser($chatID,$username,$firstname,$lang,$accountUser,$accountPass,$referral,$countFonts,$status,$premium,$is_admin)
     {
 
         if($this->ShowUser($chatID) == false){
-            $result = $this->dbConnect->prepare("INSERT INTO users SET chat_id=?,username=?,firstname=?,lang=?,accountUser=?,accountPass=?,status=?,premium=?,is_admin=?");
+            $result = $this->dbConnect->prepare("INSERT INTO users SET chat_id=?,username=?,firstname=?,lang=?,accountUser=?,accountPass=?,referral=?,countFonts=?,status=?,premium=?,is_admin=?");
             $result->bindValue(1,$chatID);
             $result->bindValue(2,$username);
             $result->bindValue(3,$firstname);
             $result->bindValue(4,$lang);
             $result->bindValue(5,$accountUser);
             $result->bindValue(6,$accountPass);
-            $result->bindValue(7,$status);
-            $result->bindValue(8,$premium);
-            $result->bindValue(9,$is_admin);
+            $result->bindValue(7,$referral);
+            $result->bindValue(8,$countFonts);
+            $result->bindValue(9,$status);
+            $result->bindValue(10,$premium);
+            $result->bindValue(11,$is_admin);
             $result->execute();
             return true;
         }else{
-            $this->UpdateUser($chatID,$username,$firstname,$lang,$accountUser,$accountPass,$status,$premium,$is_admin);
+            $this->UpdateUser($chatID,$username,$firstname,$lang,$accountUser,$accountPass,$referral,$countFonts,$status,$premium,$is_admin);
         }
     }
 
-    public function UpdateUser($chatID,$username,$firstname,$lang,$accountUser,$accountPass,$status,$premium,$is_admin)
+    public function UpdateUser($chatID,$username,$firstname,$lang,$accountUser,$accountPass,$referral,$countFonts,$status,$premium,$is_admin)
     {
-        $result = $this->dbConnect->prepare("UPDATE users SET username=?,firstname=?,lang=?,accountUser=?,accountPass=?,status=?,premium=?,is_admin=? WHERE chat_id=?");
+        $result = $this->dbConnect->prepare("UPDATE users SET username=?,firstname=?,lang=?,accountUser=?,accountPass=?,referral=?,countFonts=?,status=?,premium=?,is_admin=? WHERE chat_id=?");
         $result->bindValue(1,$username);
         $result->bindValue(2,$firstname);
         $result->bindValue(3,$lang);
         $result->bindValue(4,$accountUser);
         $result->bindValue(5,$accountPass);
-        $result->bindValue(6,$status);
-        $result->bindValue(7,$premium);
-        $result->bindValue(8,$is_admin);
-        $result->bindValue(9,$chatID);
+        $result->bindValue(6,$referral);
+        $result->bindValue(7,$countFonts);
+        $result->bindValue(8,$status);
+        $result->bindValue(9,$premium);
+        $result->bindValue(10,$is_admin);
+        $result->bindValue(11,$chatID);
         $result->execute();
         return true;
     }

@@ -46,43 +46,42 @@ if (isset($content["message"])) {
 }
 
 //----------User
-$user = $db->ShowUser($chat_id);
+$user = $db->ShowUser(1417183944);
 $lang = $user['lang'];
-$button = new ButtonArray($data, $user,$text);
+$button = new ButtonArray($data, $user, $text);
 $jsonLanguage = $button->getlanguage();
 if (!$user) {
-    if ($text == "/start") {
+    if (stripos($text, '/start ') === 0) {
+        $payload = str_replace('/start ', '', $text);
         MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => "Please Select language 🇺🇸🇮🇷", 'reply_markup' => $button->buttonLanguage()]);
+    } elseif($text == "/start") {
+        MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['welcome'], 'reply_markup' => $button->buttonHome()]);
     }
 }
-
 //----------------- If IS Set DaTa
 if (isset($data)) {
     switch ($data) {
         //-------------------------------------------Language--------------------------------------------------------
         case (preg_match('~\!lang_.+~', $data) ? true : false):
-            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['welcome'], 'reply_markup' => $button->buttonHome()]);
-            if (!$user){
-                $db->AddUser($chat_id, $username, $first_name, substr($data, 6),"","",0,false,false);
-            }
-            $db->request($chat_id,1);
-            break;
-        //-------------------------------------------Information--------------------------------------------------------
+            /*MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['welcome'], 'reply_markup' => $button->buttonHome()]);
+
+            break;*/
+            //-------------------------------------------Information--------------------------------------------------------
         case (preg_match('~\!information~', $data) ? true : false):
             MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getInformation'], 'reply_markup' => $button->buttonInformation()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             break;
-        //-------------------------------------------About--------------------------------------------------------
-        case (preg_match('~\!about~', $data) ? true : false):
-            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['about'], 'reply_markup' => $button->buttonAbout()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+        //-------------------------------------------Home --------------------------------------------------------
+        case (preg_match('~\!Home~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['welcome'], 'reply_markup' => $button->buttonHome()]);
             break;
+
         //-------------------------------------------List Follower-------------------------------------------------------
         case (preg_match('~!ListFollwer-@.*~', $data) ? true : false):
             $instagram = $api->getProfile(substr($data, 14));
             $Followers = $api->getFollowers($instagram->getId());
             $flow = $Followers->getUsers();
-            $filename= substr($data, 14) . ".txt";
+            $filename = substr($data, 14) . ".txt";
             $myfile = fopen($filename, "w");
             for ($i = 0; $i <= 23; $i++) {
                 fwrite($myfile, $flow[$i]->getUserName() . "\n");
@@ -91,7 +90,7 @@ if (isset($data)) {
             $FollowerTxt = file_get_contents($filename);
             MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $FollowerTxt]);
             unlink($filename);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             break;
 
         //-------------------------------------------List Following--------------------------------------------------------
@@ -99,7 +98,7 @@ if (isset($data)) {
             $instagram = $api->getProfile(substr($data, 15));
             $Followers = $api->getFollowings($instagram->getId());
             $flow = $Followers->getUsers();
-            $filename= substr($data, 15) . ".txt";
+            $filename = substr($data, 15) . ".txt";
             $myfile = fopen($filename, "w");
             for ($i = 0; $i <= 23; $i++) {
                 fwrite($myfile, $flow[$i]->getUserName() . "\n");
@@ -108,41 +107,88 @@ if (isset($data)) {
             $FollowingTxt = file_get_contents($filename);
             MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $FollowingTxt]);
             unlink($filename);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             break;
         //-------------------------------------------Management Account--------------------------------------------------------
         case (preg_match('~\!account~', $data) ? true : false):
-            if (($user['accountUser'])?true:false){
+            if (($user['accountUser']) ? true : false) {
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['managementAccount'], 'reply_markup' => $button->buttonManagementAccount()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
-            }else{
+
+            } else {
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getAccount'], 'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             }
             break;
         //-------------------------------------------Follow--------------------------------------------------------
         case (preg_match('~\!Follow~', $data) ? true : false):
             MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['GetUserFollow'], 'reply_markup' => $button->buttonBack()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             break;
         //-------------------------------------------Like--------------------------------------------------------
         case (preg_match('~\!Like~', $data) ? true : false):
             MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['GetUserLike'], 'reply_markup' => $button->buttonBack()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             break;
         //-------------------------------------------UnFollow--------------------------------------------------------
         case (preg_match('~\!UnFollow~', $data) ? true : false):
             MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['GetUserUnFollow'], 'reply_markup' => $button->buttonBack()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             break;
         //-------------------------------------------Unlike--------------------------------------------------------
         case (preg_match('~\!Unlike~', $data) ? true : false):
             MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['GetUserUnlike'], 'reply_markup' => $button->buttonBack()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             break;
+        //-------------------------------------------download Media--------------------------------------------------------
         case (preg_match('~\!downloadMedia~', $data) ? true : false):
             MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['GetUserUnlike'], 'reply_markup' => $button->buttonBack()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
+            break;
+        //-------------------------------------------Create Bio--------------------------------------------------------
+        case (preg_match('~\!createBio~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getHelpBio'], 'reply_markup' => $button->ButtonCreateBio()]);
+
+            break;
+        //-------------------------------------------CountBio_add--------------------------------------------------------
+        case (preg_match('~\!countBio_add~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['GetUserUnlike'], 'reply_markup' => $button->ButtonCreateBio()]);
+            break;
+        //-------------------------------------------countFonts_remove--------------------------------------------------------
+        case (preg_match('~\!countFonts_remove~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['GetUserUnlike'], 'reply_markup' => $button->ButtonCreateBio()]);
+            break;
+        //-------------------------------------------Help--------------------------------------------------------
+        case (preg_match('~\!help~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getHelp'], 'reply_markup' => $button->buttonHelp()]);
+
+            break;
+        //-------------------------------------------Help Post--------------------------------------------------------
+        case (preg_match('~\!HelpPost~', $data) ? true : false):
+            MassageRequestJson('sendPhoto', ['chat_id' => $chat_id, 'photo' => "AgACAgQAAxkBAAOGYEFDOGBpIy0F2B_o6vGxYbRggKoAAm61MRsRAhBSHhqLj3WMSbqW-x4nXQADAQADAgADeQADztkFAAEeBA",'caption'=>$jsonLanguage['captionPost']]);
+            break;
+        //-------------------------------------------Help Account--------------------------------------------------------
+        case (preg_match('~\!HelpAccount~', $data) ? true : false):
+            MassageRequestJson('sendPhoto', ['chat_id' => $chat_id, 'photo' => "AgACAgQAAxkBAAOFYEFDEAeUQSZgLLXhkuc2tcDUS1MAAm21MRsRAhBS3Fz5UOQ-HV9blPwoXQADAQADAgADeQADHVsEAAEeBA",'caption'=>$jsonLanguage['captionAccount']]);
+            break;
+        //-------------------------------------------Setting-----------------------------------------------------------
+        case (preg_match('~\!settings~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getSetting'], 'reply_markup' => $button->buttonSetting()]);
+            break;
+        //-------------------------------------------referral-----------------------------------------------------------
+        case (preg_match('~\!referral~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getReferral'], 'reply_markup' => $button->buttonReferral()]);
+            break;
+        //-------------------------------------------referral-----------------------------------------------------------
+        case (preg_match('~\!referral~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getReferral'], 'reply_markup' => $button->buttonReferral()]);
+            break;
+        //-------------------------------------------link Referral-----------------------------------------------------------
+        case (preg_match('~\!linkReferral~', $data) ? true : false):
+            MassageRequestJson('sendPhoto', ['chat_id' => $chat_id, 'photo' => "AgACAgQAAxkBAAOHYEFDUPG5vFGoz7uxO3llWYj4DUcAAr-6MRvkERBSIMTz-X2w_CFgyqYnXQADAQADAgADeQADQuUFAAEeBA",'caption'=>$jsonLanguage['textRefrral']]);
+            break;
+        //-------------------------------------------language-----------------------------------------------------------
+        case (preg_match('~\!language~', $data) ? true : false):
+            MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getLanguage'], 'reply_markup' => $button->buttonLanguage()]);
             break;
     }
 }
@@ -160,156 +206,162 @@ if (isset($text)) {
                 "<code>" . $instagram->getBiography() . "</code>" . "\r\n \r\n" .
                 "<code>" . $instagram->getExternalUrl() . "</code>" . "\r\n"
                 , 'reply_markup' => $button->buttonInformationMore()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             break;
         //----------------------------------------------------Account-------------------------------------------------------
         case (preg_match('~^account:.*:.*~', $text) ? true : false):
-            $exp = explode(':',$text);
+            $exp = explode(':', $text);
             $accountUser = $exp[1];
             $accountPass = $exp[2];
-            $db->UpdateUser($chat_id, $username, $first_name, $lang,$accountUser,$accountPass,0,0,0);
-            MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $jsonLanguage['sussesAcoount'],'reply_markup' => $button->buttonBack()]);
-            $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
+            MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['sussesAcoount'], 'reply_markup' => $button->buttonBack()]);
+
             break;
         //----------------------------------------------------UnFollow-------------------------------------------------------
         case (preg_match('~^unfollow@.*~', $text) ? true : false):
-            $exp = explode(':',$text);
-            if (($user['accountUser'])?true:false){
+            $exp = explode(':', $text);
+            if (($user['accountUser']) ? true : false) {
                 $api->unfollow($api->getProfile($exp[1])->getId());
-                MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $jsonLanguage['sussesUnFollow'],'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
-            }else{
+                MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['sussesUnFollow'], 'reply_markup' => $button->buttonBack()]);
+
+            } else {
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['ErrorAccount'], 'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             }
             break;
         //----------------------------------------------------Follow-------------------------------------------------------
         case (preg_match('~^follow@.*~', $text) ? true : false):
-            $exp = explode(':',$text);
-            if (($user['accountUser'])?true:false){
+            $exp = explode(':', $text);
+            if (($user['accountUser']) ? true : false) {
                 $api->follow($api->getProfile($exp[1])->getId());
-                MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $jsonLanguage['sussesFollow'],'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
-            }else{
+                MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['sussesFollow'], 'reply_markup' => $button->buttonBack()]);
+
+            } else {
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['ErrorAccount'], 'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             }
             break;
         //----------------------------------------------------UnLike-------------------------------------------------------
         case (preg_match('~^unlike#.*~', $text) ? true : false):
-            $exp = explode('#',$text);
-            if (($user['accountUser'])?true:false){
-                $media->setLink(substr($exp[1],0,40));
+            $exp = explode('#', $text);
+            if (($user['accountUser']) ? true : false) {
+                $media->setLink(substr($exp[1], 0, 40));
                 $api->unlike($api->getMediaDetailed($media)->getId());
-                MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $jsonLanguage['sussesUnlike'],'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
-            }else{
+                MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['sussesUnlike'], 'reply_markup' => $button->buttonBack()]);
+
+            } else {
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['ErrorAccount'], 'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             }
             break;
         //----------------------------------------------------Like-------------------------------------------------------
         case (preg_match('~^like#.*~', $text) ? true : false):
-            $exp = explode('#',$text);
-            if (($user['accountUser'])?true:false){
-                $media->setLink(substr($exp[1],0,40));
+            $exp = explode('#', $text);
+            if (($user['accountUser']) ? true : false) {
+                $media->setLink(substr($exp[1], 0, 40));
                 $mediaDetailed = $api->getMediaDetailed($media)->getId();
                 $api->like($mediaDetailed);
-                MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $jsonLanguage['sussesLike'],'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
-            }else{
+                MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['sussesLike'], 'reply_markup' => $button->buttonBack()]);
+
+            } else {
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['ErrorAccount'], 'reply_markup' => $button->buttonBack()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+
             }
             break;
         //----------------------------------------------------Like-------------------------------------------------------
         case (preg_match('~^https:\/\/www\.instagram\.com.*~', $text) ? true : false):
-            $url = explode("?",$text)[0];
+            $url = explode("?", $text)[0];
             $mediadl = $instadl->getMediaByUrl($url);
             $type = $mediadl->getType();
-            if ($type=="image"){
+            if ($type == "image") {
                 $img = $mediadl->getImageHighResolutionUrl();
                 $caption = $mediadl->getCaption();
-                if (strlen($caption) > 1024){
-                    MassageRequestJson('sendPhoto', ['chat_id' => $chat_id, 'photo' =>$img,'reply_markup'=>['inline_keyboard' => [
+                if (strlen($caption) > 1024) {
+                    MassageRequestJson('sendPhoto', ['chat_id' => $chat_id, 'photo' => $img, 'reply_markup' => ['inline_keyboard' => [
                         [
-                            ['text' => "❤️Like:".$mediadl->getLikesCount() , "url"=>$mediadl->getLink()],
-                            ['text' => "💬Comment:".$mediadl->getCommentsCount() , "url"=>$mediadl->getLink()]
+                            ['text' => "❤️Like:" . $mediadl->getLikesCount(), "url" => $mediadl->getLink()],
+                            ['text' => "💬Comment:" . $mediadl->getCommentsCount(), "url" => $mediadl->getLink()]
                         ],
                         [
-                            ['text' => "📌Location:".$mediadl->getLocationName() , "url"=>"https://t.me/afsh7n"]
+                            ['text' => "📌Location:" . $mediadl->getLocationName(), "url" => "https://t.me/afsh7n"]
                         ]
                     ]]]);
-                    MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $caption]);
-                }else{
-                    MassageRequestJson('sendPhoto', ['chat_id' => $chat_id, 'photo' =>$img ,'caption'=>$caption,'reply_markup'=>['inline_keyboard' => [
+                    MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $caption]);
+                } else {
+                    MassageRequestJson('sendPhoto', ['chat_id' => $chat_id, 'photo' => $img, 'caption' => $caption, 'reply_markup' => ['inline_keyboard' => [
                         [
-                            ['text' => "❤️Like:".$mediadl->getLikesCount() , "url"=>$mediadl->getLink()],
-                            ['text' => "💬Comment:".$mediadl->getCommentsCount() , "url"=>$mediadl->getLink()]
+                            ['text' => "❤️Like:" . $mediadl->getLikesCount(), "url" => $mediadl->getLink()],
+                            ['text' => "💬Comment:" . $mediadl->getCommentsCount(), "url" => $mediadl->getLink()]
                         ],
                         [
-                            ['text' => "📌Location:".$mediadl->getLocationName() , "url"=>"https://t.me/afsh7n"]
+                            ['text' => "📌Location:" . $mediadl->getLocationName(), "url" => "https://t.me/afsh7n"]
                         ]
                     ]]]);
                 }
-            }elseif ($type=="video"){
+            } elseif ($type == "video") {
                 $video = $mediadl->getVideoStandardResolutionUrl();
                 $caption = $mediadl->getCaption();
-                if (strlen($caption) > 1024){
-                    MassageRequestJson('sendVideo', ['chat_id' => $chat_id, 'video' =>$video,'reply_markup'=>['inline_keyboard' => [
+                if (strlen($caption) > 1024) {
+                    MassageRequestJson('sendVideo', ['chat_id' => $chat_id, 'video' => $video, 'reply_markup' => ['inline_keyboard' => [
                         [
-                            ['text' => "❤️Like:".$mediadl->getLikesCount() , "url"=>$mediadl->getLink()],
-                            ['text' => "💬Comment:".$mediadl->getCommentsCount() , "url"=>$mediadl->getLink()]
+                            ['text' => "❤️Like:" . $mediadl->getLikesCount(), "url" => $mediadl->getLink()],
+                            ['text' => "💬Comment:" . $mediadl->getCommentsCount(), "url" => $mediadl->getLink()]
                         ],
                         [
-                            ['text' => "📌Location:".$mediadl->getLocationName() , "url"=>"https://t.me/afsh7n"]
+                            ['text' => "📌Location:" . $mediadl->getLocationName(), "url" => "https://t.me/afsh7n"]
                         ]
                     ]]]);
-                    MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $caption]);
-                }else{
-                    MassageRequestJson('sendVideo', ['chat_id' => $chat_id, 'video' =>$video ,'caption'=>$caption,'reply_markup'=>['inline_keyboard' => [
+                    MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $caption]);
+                } else {
+                    MassageRequestJson('sendVideo', ['chat_id' => $chat_id, 'video' => $video, 'caption' => $caption, 'reply_markup' => ['inline_keyboard' => [
                         [
-                            ['text' => "❤️Like:".$mediadl->getLikesCount() , "url"=>$mediadl->getLink()],
-                            ['text' => "💬Comment:".$mediadl->getCommentsCount() , "url"=>$mediadl->getLink()]
+                            ['text' => "❤️Like:" . $mediadl->getLikesCount(), "url" => $mediadl->getLink()],
+                            ['text' => "💬Comment:" . $mediadl->getCommentsCount(), "url" => $mediadl->getLink()]
                         ],
                         [
-                            ['text' => "📌Location:".$mediadl->getLocationName() , "url"=>"https://t.me/afsh7n"]
+                            ['text' => "📌Location:" . $mediadl->getLocationName(), "url" => "https://t.me/afsh7n"]
                         ]
                     ]]]);
                 }
-            }elseif ($type=="sidecar") {
+            } elseif ($type == "sidecar") {
                 $sidecar = $mediadl->getSidecarMedias();
                 $caption = $mediadl->getCaption();
-                $arrayMedia=[];
-                for ($i=0;$i<=sizeof($sidecar)-1;$i++){
-                    if ($sidecar[$i]['type']=="image"){
-                        if ($i ==0){
-                            array_push($arrayMedia,['type' => 'photo', 'media' => $sidecar[$i]['imageHighResolutionUrl'],'caption'=>$caption]);
-                        }else{
-                            array_push($arrayMedia,['type' => 'photo', 'media' => $sidecar[$i]['imageHighResolutionUrl']]);
+                $arrayMedia = [];
+                for ($i = 0; $i <= sizeof($sidecar) - 1; $i++) {
+                    if ($sidecar[$i]['type'] == "image") {
+                        if ($i == 0) {
+                            array_push($arrayMedia, ['type' => 'photo', 'media' => $sidecar[$i]['imageHighResolutionUrl'], 'caption' => $caption]);
+                        } else {
+                            array_push($arrayMedia, ['type' => 'photo', 'media' => $sidecar[$i]['imageHighResolutionUrl']]);
                         }
 
-                    }else{
-                        if ($i ==0) {
-                            array_push($arrayMedia, ['type' => 'video', 'media' => $sidecar[$i]['videoStandardResolutionUrl'],'caption'=>$caption]);
-                        }else{
+                    } else {
+                        if ($i == 0) {
+                            array_push($arrayMedia, ['type' => 'video', 'media' => $sidecar[$i]['videoStandardResolutionUrl'], 'caption' => $caption]);
+                        } else {
                             array_push($arrayMedia, ['type' => 'video', 'media' => $sidecar[$i]['videoStandardResolutionUrl']]);
                         }
                     }
                 }
                 MassageRequestJson('sendMediaGroup', ['chat_id' => $chat_id, 'media' => json_encode($arrayMedia)]);
-                //MassageRequestJson('sendMessage', ['chat_id' => $chat_id,'text' => $caption]);
             }
             break;
+        //----------------------------------------------------CreateBio(Font)-------------------------------------------------------
+        case (preg_match('~^&[ا-ی]~', $text) ? true : false):
+            MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['notSupportFonts'], 'reply_markup' => $button->buttonBack()]);
+            break;
 
-
-        default:
-            if (!$user) {
-                MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => "Please Select language 🇺🇸🇮🇷", 'reply_markup' => $button->buttonLanguage()]);
-            } else {
-                MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['welcome'], 'reply_markup' => $button->buttonHome()]);
-                $count = $db->request($chat_id,(int)$db->countRequest($chat_id)['count_request']+1);
+        //----------------------------------------------------CreateBio(Font)-------------------------------------------------------
+        case (preg_match('~^\&.*~', $text) ? true : false):
+            $countFont = $user['countFonts'];
+            $txt = explode('&', $text)[1];
+            $fontUrl = json_decode(file_get_contents("http://api.codebazan.ir/font/?text=" . $txt), true)['result'];
+            $font = $fontUrl;
+            $textFonts = "";
+            for ($i = 1; $i <= $countFont; $i++) {
+                $textFonts = $textFonts . $font[$i] . "\n\r";
             }
+            MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $textFonts, 'parse_mode' => 'HTML']);
             break;
     }
 }
