@@ -37,7 +37,7 @@ class ButtonArray{
             ],
             [
                 ['text' => $this->language['settings'], 'callback_data' => "!settings"],
-                ['text' => $this->language['downloadMedia'], 'callback_data' => "!downloadMedia"]
+                ['text' => $this->language['help'], 'callback_data' => "!help"]
             ]
         ]];
     }
@@ -74,8 +74,8 @@ class ButtonArray{
     {
         return ['inline_keyboard' => [
             [
-                ['text' => $this->language['listFollwer'], 'callback_data' => "ListFollwer-".$this->text],
-                ['text' => $this->language['listFollwing'], 'callback_data' => "ListFollwing-".$this->text]
+                ['text' => $this->language['listFollwer'], 'callback_data' => "!ListFollwer-".$this->text],
+                ['text' => $this->language['listFollwing'], 'callback_data' => "!ListFollwing-".$this->text]
             ]
         ]];
     }
