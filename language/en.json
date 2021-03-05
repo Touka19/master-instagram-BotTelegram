@@ -27,7 +27,7 @@
   "GetUserUnlike": "\uD83D\uDCBCWell, now send me the Link Post of the person in question like this\uD83D\uDC47:\nunlike@linkPost\nFor example\uD83D\uDC47:\nunlike@https://www.instagram.com/p/CJq-B_RMRv4/?igshid=pvd70120paid\n\n\uD83D\uDCA1If you want to know how to get the post link, click on this command:\uD83D\uDC47\n/help_linkPost",
   "sussesUnlike": "✅ @Afshin was successfully Unfollowed❌",
   "downloadMedia": "\uD83D\uDCE5Download Photo & Video\uD83D\uDCE5",
-  "getDownloadMedia": "",
+  "getDownloadMedia": "\uD83D\uDCBCTo download enough photos and videos, send the link of the desired post\n\uD83D\uDCA1If you do not know how, just go to the help section",
   "createBio": "✏️Create Bio\uD83D\uDC8C",
   "PanelcreateBio": "☺️Ready to beautify Bio Instagram?\n\n\uD83D\uDCBCWell, to use this part, it is enough to first put a & mark and then put the text\uD83D\uDC47:\n&text\n\n\uD83D\uDCA1For example\uD83D\uDC47:\n&Hello World!\n\n\uD83D\uDC8EFrom here you can change the number of fonts you create.(1,135)\uD83D\uDC47\uD83D\uDC47",
   "help": "\uD83D\uDCA1Help\uD83D\uDCA1",
@@ -48,9 +48,9 @@
   "joinChannel": "\uD83D\uDD30To use the robot service, you need to join our sponsor channel:\uD83C\uDF89\n\uD83D\uDCA1Just click the button below and become a member\uD83D\uDC47",
   "join": "\uD83D\uDE07Join Channel Sponsor〽️",
   "sussesJoin": "✅Susses Join✅",
-  "panelAdmin": "Welcome is PAnel Admin",
-  "changeChannel": "changeChannel",
-  "changeChannelTxt": "changeChannel Text show simple",
-  "changeChannelSusses": "changeChannel Text show simple",
-  "listUsers": "listUsers"
+  "panelAdmin": "\uD83C\uDF89Welcome to the Master Robot support panel.\n\uD83D\uDCBCWhat part do you want to manage?\uD83D\uDC47",
+  "changeChannel": "⚙️Change Channel",
+  "changeChannelTxt": "\uD83D\uDCBCTo change the robot channel, first add the robot to the channel and give the admin access.\nThen send the channel idea like this\uD83D\uDC47\n(@Channel)\n\uD83D\uDCA1For Example:\n(@Afsh7n)",
+  "changeChannelSusses": "✅The robot channel was successfully changed✅.\n\uD83D\uDCA1Note that not being a member of the robot inside the channel and not being an admin can lead to the failure of this section.",
+  "listUsers": "\uD83D\uDCCAList User\uD83D\uDCCA"
 }
