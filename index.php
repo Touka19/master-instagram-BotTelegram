@@ -2,6 +2,7 @@
 require_once './core/core.php';
 require_once './Database/database.php';
 require_once './utils/ButtonArray.php';
+require_once './utils/PersianCalendar.php';
 require './vendor/autoload.php';
 
 //-------------dep
@@ -39,6 +40,9 @@ if (isset($content["message"])) {
 //----------User
 $user = $db->ShowUser($chat_id);
 $is_admin = $user['is_admin'];
+//--------- ChannelSponsor
+$channelSponsor = '@afsh7nDev';
+//----------
 $lang = $user['lang'];
 if ($db->countRefrral($chat_id)){
     $countRef = $db->countRefrral($chat_id);
@@ -50,7 +54,7 @@ if ($db->countRefrral($chat_id)){
 
 $button = new ButtonArray($data, $user, $text);
 $jsonLanguage = $button->getlanguage();
-$join = json_decode(MassageRequestJson('getChatMember', ['chat_id' => '@afsh7nDev', 'user_id' =>1417183944 ]),true);
+$join = json_decode(MassageRequestJson('getChatMember', ['chat_id' => $channelSponsor, 'user_id' =>$chat_id ]),true);
 
 //-----------------------Config Account ----------------------------------
 $UserDefultAccount = "";
@@ -74,24 +78,24 @@ $instadl->login();
 
 //--------------------------------------------------------------------------------------------------------------------
 if (!$join['ok']){
-   MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['joinChannel'],'reply_markup'=>['inline_keyboard' => [
+    MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['joinChannel'],'reply_markup'=>['inline_keyboard' => [
         [
             ['text' => $jsonLanguage['join'],'url' => "https://t.me/afsh7nDev"]
         ],
-       [
-           ['text' => $jsonLanguage['sussesJoin'],'url' => "https://t.me/afsh7n_developbot?start"]
-       ]
-   ]]]);
+        [
+            ['text' => $jsonLanguage['sussesJoin'],'url' => "https://t.me/afsh7n_developbot?start"]
+        ]
+    ]]]);
 }else{
     if (isset($data)) {
         switch ($data) {
             //-------------------------------------------Language--------------------------------------------------------
             case (preg_match('~\!lang_.+~', $data) ? true : false):
                 $exp = explode("_",$data)[1];
-                $db->UpdateUser($chat_id,$username,$first_name,$exp,"","",$user['referral'],50,0,0,0);
+                $db->UpdateUser($chat_id,$username,$first_name,$exp,"","",$user['referral'],50,0,0,0,$user['data_join']);
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['welcome'], 'reply_markup' => $button->buttonHome()]);
                 break;
-                //-------------------------------------------Information--------------------------------------------------------
+            //-------------------------------------------Information--------------------------------------------------------
             case (preg_match('~\!information~', $data) ? true : false):
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getInformation'], 'reply_markup' => $button->buttonInformation()]);
 
@@ -177,7 +181,7 @@ if (!$join['ok']){
             //-------------------------------------------countFonts_remove--------------------------------------------------------
             case (preg_match('~\!countFonts_remove~', $data) ? true : false):
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['GetUserUnlike'], 'reply_markup' => $button->ButtonCreateBio()]);
-                $db->UpdateUser($chat_id,$username,$first_name,$user['lang'],$user['accountUser'],$user['accountPass'],$user['referral'],$user['countFonts']-1,0,0,0);
+                $db->UpdateUser($chat_id,$username,$first_name,$user['lang'],$user['accountUser'],$user['accountPass'],$user['referral'],$user['countFonts']-1,0,0,0,$user['data_join']);
                 break;
             //-------------------------------------------Help--------------------------------------------------------
             case (preg_match('~\!help~', $data) ? true : false):
@@ -207,6 +211,31 @@ if (!$join['ok']){
             case (preg_match('~\!language~', $data) ? true : false):
                 MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['getLanguage'], 'reply_markup' => $button->buttonLanguage()]);
                 break;
+            //-------------------------------------------changeChannel Sponsor----------------------------------------------------------
+            case (preg_match('~\!changeChannel~', $data) ? true : false):
+                MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['changeChannelTxt'], 'reply_markup' => $button->buttonBackAdmin()]);
+                break;
+            //-------------------------------------------listUsers ---------------------------------------------------------------------
+            case (preg_match('~\!listUsers~', $data) ? true : false):
+                $y = mds_date('Y');
+                $m = mds_date('m');
+                $d = mds_date('d');
+                $mon = $m - 1 ;
+                $da = $d -1 ;
+                $month = $db->listUser($y.$mon.$d)[0]['COUNT(chat_id)'];
+                $day = $db->listUser($y.$m.$da)[0]['COUNT(chat_id)'];
+                $all = $db->listUser()[0]['COUNT(chat_id)'];
+                if ($lang == "fa"){
+                    $listUsersTxt = "List Users Month : $month   List Users Day : $day   All Users: $all";
+                }else{
+                    $listUsersTxt = "تعداد کاربران اضافه شده در ماه: $month \n\r تعداد کاربران اضافه شده امروز : $day  \n\r   تعداد کل کاربران : $all";
+                }
+                MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $listUsersTxt, 'reply_markup' => $button->buttonBackAdmin()]);
+                break;
+            //-------------------------------------------changeChannel Sponsor----------------------------------------------------------
+            case (preg_match('~\!back_admin~', $data) ? true : false):
+                MassageRequestJson('editMessageText', ['chat_id' => $chat_id, 'message_id' => $message_id, 'text' => $jsonLanguage['panelAdmin'], 'reply_markup' => $button->buttonAdmin()]);
+                break;
         }
     }
 
@@ -214,15 +243,15 @@ if (!$join['ok']){
     if (isset($text)) {
         switch ($text) {
             //---------------------------------------------------------------------------------------------------------------
-            case (preg_match('~^/~', $text) ? true : false):
+            case (preg_match('~^/s~', $text) ? true : false):
                 if (!$user){
                     if (stripos($text, '/start ') === 0){
                         $payload = str_replace('/start ', '', $text);
-                        $db->AddUser($chat_id,"","",'en','','',$payload,50,0,0,0);
+                        $db->AddUser($chat_id,"","",'en','','',$payload,50,0,0,0,mds_date("Ymd"));
                         MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => "Please Select language 🇺🇸🇮🇷", 'reply_markup' => $button->buttonLanguage()]);
                         break;
                     }else{
-                        $db->AddUser($chat_id,"","",'en','','',"",50,0,0,0);
+                        $db->AddUser($chat_id,"","",'en','','',"",50,0,0,0,mds_date("Ymd"));
                         MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => "Please Select language 🇺🇸🇮🇷", 'reply_markup' => $button->buttonLanguage()]);
                         break;
                     }
@@ -247,7 +276,7 @@ if (!$join['ok']){
                 $exp = explode(':', $text);
                 $accountUser = $exp[1];
                 $accountPass = $exp[2];
-                $db->UpdateUser($chat_id,$username,$first_name,$user['lang'],$accountUser,$accountPass,$user['referral'],50,0,0,0);
+                $db->UpdateUser($chat_id,$username,$first_name,$user['lang'],$accountUser,$accountPass,$user['referral'],50,0,0,0,$user['data_join']);
                 MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['sussesAcoount'], 'reply_markup' => $button->buttonBack()]);
 
                 break;
@@ -396,6 +425,18 @@ if (!$join['ok']){
                     $textFonts = $textFonts . $font[$i] . "\n\r";
                 }
                 MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $textFonts, 'parse_mode' => 'HTML']);
+                break;
+            //----------------------------------------------------Admin Managment-------------------------------------------------------
+            case (preg_match('~^admin$~', $text) ? true : false):
+                if ($is_admin){
+                    MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['panelAdmin'],'reply_markup' => $button->buttonAdmin()]);
+                    break;
+                }
+            //----------------------------------------------------Admin Managment-------------------------------------------------------
+            case (preg_match('~^\(\@.*\)$~', $text) ? true : false):
+                $exp = explode("@",$text)[1];
+                $channelSponsor = $exp;
+                MassageRequestJson('sendMessage', ['chat_id' => $chat_id, 'text' => $jsonLanguage['changeChannelSusses'],'reply_markup' => $button->buttonBackAdmin()]);
                 break;
         }
     }

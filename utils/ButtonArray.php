@@ -159,4 +159,22 @@ class ButtonArray{
         ]];
     }
 
+    public function buttonBackAdmin()
+    {
+        return ['inline_keyboard' => [
+            [
+                ['text' => $this->language['back'], 'callback_data' => "!back_admin"]
+            ]
+        ]];
+    }
+
+    public function buttonAdmin()
+    {
+        return ['inline_keyboard' => [
+            [
+                ['text' => $this->language['changeChannel'], 'callback_data' => "!changeChannel"],
+                ['text' => $this->language['listUsers'], 'callback_data' => "!listUsers"]
+            ]
+        ]];
+    }
 }

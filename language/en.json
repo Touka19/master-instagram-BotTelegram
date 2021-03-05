@@ -47,5 +47,10 @@
   "getSetting": "\uD83D\uDCBCFrom here you can change your settings:\uD83D\uDC47",
   "joinChannel": "\uD83D\uDD30To use the robot service, you need to join our sponsor channel:\uD83C\uDF89\n\uD83D\uDCA1Just click the button below and become a member\uD83D\uDC47",
   "join": "\uD83D\uDE07Join Channel Sponsor〽️",
-  "sussesJoin": "✅Susses Join✅"
+  "sussesJoin": "✅Susses Join✅",
+  "panelAdmin": "Welcome is PAnel Admin",
+  "changeChannel": "changeChannel",
+  "changeChannelTxt": "changeChannel Text show simple",
+  "changeChannelSusses": "changeChannel Text show simple",
+  "listUsers": "listUsers"
 }
