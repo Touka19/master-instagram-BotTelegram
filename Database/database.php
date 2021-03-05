@@ -93,10 +93,10 @@ class database
         }
     }
 
-    public function countRequest($chatID)
+    public function countRefrral($ref)
     {
-        $result = $this->dbConnect->prepare("SELECT count_request FROM request WHERE chat_id=?");
-        $result->bindValue(1,$chatID);
+        $result = $this->dbConnect->prepare("SELECT chat_id FROM users WHERE referral=?");
+        $result->bindValue(1,$ref);
         $result->execute();
         $row = $result->fetch(PDO::FETCH_ASSOC);
         return $row;

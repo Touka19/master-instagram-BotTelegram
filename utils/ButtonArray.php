@@ -151,7 +151,6 @@ class ButtonArray{
     {
         return ['inline_keyboard' => [
             [
-                ['text' => $this->language['countReferral'], 'url' => "https://afsh7n.ir"],
                 ['text' => $this->language['linkReferral'], 'callback_data' => "!linkReferral"]
             ],
             [
